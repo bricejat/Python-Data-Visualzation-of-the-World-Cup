@@ -10,42 +10,7 @@ print("Current working directory:", os.getcwd())
 
 data_path = Path(path) if path else (Path(__file__).parent / "input")
 
-if data_path.exists():
-	if data_path.is_dir():
-		print(f"Dataset directory exists: {data_path}")
-		for p in sorted(data_path.iterdir()):
-			print(" -", p.name)
-	else:
-		print(f"Downloaded file: {data_path.name} (path: {data_path})")
-else:
-	print("ERROR: path does not exist:", data_path)
-	
-
 import pandas as pd
-
-candidates = [
-	data_path / 'WorldCups.csv',
-	Path(__file__).parent / 'input' / 'WorldCups.csv',
-	Path('input') / 'WorldCups.csv'
-]
-
-csv_path = None
-for c in candidates:
-	if c.exists():
-		csv_path = c
-		break
-
-if csv_path is None:
-	looked = '\n'.join(str(p) for p in candidates)
-	raise FileNotFoundError(
-		f"Could not find WorldCups.csv. Checked these locations:\n{looked}\n\n"
-		f"Current working directory: {os.getcwd()}\n"
-		f"Dataset folder (data_path) was: {data_path}\n"
-	)
-
-print(f"Loading CSV from: {csv_path}")
-df = pd.read_csv(csv_path)
-
 import matplotlib.pyplot as plt
 
 #GOALS SCORED STATS
@@ -140,3 +105,4 @@ print(top_coaches)
 # Players with most games played
 top_players = df_players['Player Name'].value_counts().head(10)
 print(top_players)
+
