@@ -11,6 +11,7 @@ print("Current working directory:", os.getcwd())
 data_path = Path(path) if path else (Path(__file__).parent / "input")
 
 import pandas as pd
+df = pd.read_csv('/kaggle/input/fifa-world-cup/WorldCups.csv')
 import matplotlib.pyplot as plt
 
 #GOALS SCORED STATS
@@ -105,4 +106,5 @@ print(top_coaches)
 # Players with most games played
 top_players = df_players['Player Name'].value_counts().head(10)
 print(top_players)
+
 
