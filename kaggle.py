@@ -50,25 +50,6 @@ candidates_players = [
 	Path(__file__).parent / 'input' / 'WorldCupPlayers.csv',
 	Path('input') / 'WorldCupPlayers.csv'
 ]
-
-csv_players = next((p for p in candidates_players if p.exists()), None)
-if csv_players is None:
-	print("Could not find WorldCupPlayers.csv. Checked:")
-	for p in candidates_players:
-		print(" -", p)
-	total_players = 0
-else:
-	print(f"Loading players CSV from: {csv_players}")
-	df_players = pd.read_csv(csv_players)
-	
-	if 'MatchID' in df_players.columns and 'Player Name' in df_players.columns:
-		players_per_match = df_players.groupby('MatchID')['Player Name'].count()
-		total_players = players_per_match.sum()
-	elif 'Player Name' in df_players.columns:
-		total_players = df_players['Player Name'].nunique(dropna=True)
-	else:
-		total_players = len(df_players)
-
 print(f"Number of total players : {total_players}")
 
 if lineup_col:
@@ -106,5 +87,6 @@ print(top_coaches)
 # Players with most games played
 top_players = df_players['Player Name'].value_counts().head(10)
 print(top_players)
+
 
 
