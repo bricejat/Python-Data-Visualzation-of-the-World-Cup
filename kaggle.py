@@ -8,8 +8,6 @@ path = kagglehub.dataset_download("abecklas/fifa-world-cup")
 print("Returned path:", path)
 print("Current working directory:", os.getcwd())
 
-# Normalize returned value into a Path object. If the function returned None,
-# fall back to the repository `input/` folder next to this script.
 data_path = Path(path) if path else (Path(__file__).parent / "input")
 
 if data_path.exists():
@@ -25,8 +23,6 @@ else:
 
 import pandas as pd
 
-# Try to find the CSV in a few sensible locations. Prefer the downloaded/returned
-# dataset folder (data_path) but also check the repo `input/` folder.
 candidates = [
 	data_path / 'WorldCups.csv',
 	Path(__file__).parent / 'input' / 'WorldCups.csv',
@@ -40,7 +36,6 @@ for c in candidates:
 		break
 
 if csv_path is None:
-	# Show helpful diagnostics to fix path problems quickly
 	looked = '\n'.join(str(p) for p in candidates)
 	raise FileNotFoundError(
 		f"Could not find WorldCups.csv. Checked these locations:\n{looked}\n\n"
@@ -99,22 +94,16 @@ if csv_players is None:
 else:
 	print(f"Loading players CSV from: {csv_players}")
 	df_players = pd.read_csv(csv_players)
-
-	# Preferred columns: 'MatchID' and 'Player Name'
+	
 	if 'MatchID' in df_players.columns and 'Player Name' in df_players.columns:
 		players_per_match = df_players.groupby('MatchID')['Player Name'].count()
 		total_players = players_per_match.sum()
 	elif 'Player Name' in df_players.columns:
 		total_players = df_players['Player Name'].nunique(dropna=True)
 	else:
-		# Fallback: use row count
 		total_players = len(df_players)
 
 print(f"Number of total players : {total_players}")
-
-# Players in the lineup vs substitutes (robust to column name differences)
-possible_lineup_cols = ['Line_Up', 'Line Up', 'Line-Up', 'LineUp', 'IsStarter', 'Starter', 'Starting']
-lineup_col = next((c for c in possible_lineup_cols if c in df_players.columns), None)
 
 if lineup_col:
 	lineup_counts = df_players[lineup_col].value_counts()
@@ -126,9 +115,6 @@ if lineup_col:
 	plt.xlabel('Starters vs Substitutes')
 	plt.ylabel('Number of Players')
 	plt.show()
-else:
-	print("No lineup-like column found in players CSV. Available columns:")
-	print(df_players.columns.tolist())
 
 #GOALS SCORED PER MIN
 import re
@@ -136,8 +122,6 @@ import re
 df_goals = df_players[df_players['Event'].notna()]
 df_goals = df_goals[df_goals['Event'].str.contains(r"G\d+", regex=True, na=False)]
 
-# Extract minute numbers from patterns like "G12'" or "G90+1'". We capture the main minute
-# part (e.g. 12 or 90) and coerce to numeric, dropping any non-matches.
 minutes = df_goals['Event'].str.extract(r"G(\d+)", expand=False)
 goal_minutes = pd.to_numeric(minutes, errors='coerce').dropna().astype(int)
 
